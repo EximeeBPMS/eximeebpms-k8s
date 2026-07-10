@@ -193,14 +193,18 @@ jobs:
         run: |
           if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
             git fetch origin gh-pages
-            git worktree add /tmp/gh-pages gh-pages
-            cp artifacthub-repo.yml /tmp/gh-pages/artifacthub-repo.yml
-            if ! git -C /tmp/gh-pages diff --quiet -- artifacthub-repo.yml; then
-              git -C /tmp/gh-pages add artifacthub-repo.yml
-              git -C /tmp/gh-pages commit -m "Sync artifacthub-repo.yml from main"
-              git -C /tmp/gh-pages push origin gh-pages
+            # cr (chart-releaser) also checks out gh-pages under /tmp during
+            # the release step above and doesn't clean up after itself -- use
+            # a distinct worktree path here to avoid colliding with it.
+            rm -rf /tmp/gh-pages-sync
+            git worktree add /tmp/gh-pages-sync gh-pages
+            cp artifacthub-repo.yml /tmp/gh-pages-sync/artifacthub-repo.yml
+            if ! git -C /tmp/gh-pages-sync diff --quiet -- artifacthub-repo.yml; then
+              git -C /tmp/gh-pages-sync add artifacthub-repo.yml
+              git -C /tmp/gh-pages-sync commit -m "Sync artifacthub-repo.yml from main"
+              git -C /tmp/gh-pages-sync push origin gh-pages
             fi
-            git worktree remove /tmp/gh-pages
+            git worktree remove /tmp/gh-pages-sync --force
           else
             echo "gh-pages branch does not exist yet -- it will be created by chart-releaser above; artifacthub-repo.yml will sync on the next release."
           fi
