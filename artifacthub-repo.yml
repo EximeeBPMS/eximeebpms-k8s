@@ -10,6 +10,7 @@
 # after every chart-releaser run, so this file only needs to be maintained
 # here on `main`.
 #
+repositoryID: "11176dba-b39a-48bc-9872-9a8b70b88fe2"
 owners:
   - name: "adminCD"
     email: "it@consdata.com"
