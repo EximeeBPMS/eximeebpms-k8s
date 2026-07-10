@@ -1,0 +1,39 @@
+# Switches the base H2 (single-instance-only) config to an external,
+# highly-available PostgreSQL and removes the now-unused H2 data volume.
+#
+# Create the referenced Secret yourself before applying this overlay, e.g.:
+#   kubectl create secret generic eximeebpms-db-credentials \
+#     --from-literal=DB_USERNAME=eximeebpms \
+#     --from-literal=DB_PASSWORD='<your-password>'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eximeebpms
+spec:
+  template:
+    spec:
+      containers:
+        - name: eximeebpms
+          env:
+            - name: DB_DRIVER
+              value: org.postgresql.Driver
+            - name: DB_URL
+              value: jdbc:postgresql://eximeebpms-db.example.internal:5432/eximeebpms
+            - name: DB_USERNAME
+              value: null
+              valueFrom:
+                secretKeyRef:
+                  name: eximeebpms-db-credentials
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              value: null
+              valueFrom:
+                secretKeyRef:
+                  name: eximeebpms-db-credentials
+                  key: DB_PASSWORD
+          volumeMounts:
+            - name: database-h2
+              $patch: delete
+      volumes:
+        - name: database-h2
+          $patch: delete

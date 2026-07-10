@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "eximeebpms.fullname" . }}-test-connection"
+  labels:
+    {{- include "eximeebpms.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+    # A one-shot test hook Pod is expected to run to completion and exit --
+    # a readinessProbe does not apply to it.
+    kube-score/ignore: pod-probes
+    {{- with .Values.tests.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: curl
+      image: curlimages/curl:8.11.1
+      imagePullPolicy: Always
+      command: ['curl']
+      # The EximeeBPMS service could take some time to start, so setting a retry mechanism.
+      args: [
+        '--retry-connrefused',
+        '--connect-timeout', '5',
+        '--max-time', '10',
+        '--retry', '15',
+        '--retry-max-time', '300',
+        '{{ include "eximeebpms.fullname" . }}:{{ .Values.service.port }}',
+      ]
+      securityContext:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      resources:
+        limits:
+          cpu: 100m
+          memory: 64Mi
+          ephemeral-storage: 64Mi
+        requests:
+          cpu: 50m
+          memory: 32Mi
+          ephemeral-storage: 16Mi
+  restartPolicy: Never

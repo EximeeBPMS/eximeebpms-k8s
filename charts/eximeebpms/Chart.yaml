@@ -1,0 +1,37 @@
+apiVersion: v2
+name: eximeebpms
+description: |
+  Helm chart for EximeeBPMS, a mission-critical BPMN 2.0 process engine forked from Camunda 7.
+type: application
+version: 0.2.0
+appVersion: 1.2.0
+keywords:
+  - bpmn
+  - eximeebpms
+  - camunda
+  - dmn
+  - process-engine
+  - workflow
+home: https://eximeebpms.org
+sources:
+  - https://github.com/EximeeBPMS/eximeebpms-k8s/tree/main/charts/eximeebpms
+  - https://github.com/EximeeBPMS/eximeebpms-docker
+  - https://github.com/EximeeBPMS/eximeebpms
+maintainers:
+  - name: Consdata
+    url: https://github.com/EximeeBPMS
+annotations:
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/images: |
+    - name: eximeebpms-bpm-platform
+      image: ghcr.io/eximeebpms/eximeebpms-bpm-platform:run-1.2.0
+      platforms:
+        - linux/amd64
+  artifacthub.io/links: |
+    - name: EximeeBPMS Helm chart
+      url: https://github.com/EximeeBPMS/eximeebpms-k8s/tree/main/charts/eximeebpms
+    - name: EximeeBPMS Docker
+      url: https://github.com/EximeeBPMS/eximeebpms-docker
+    - name: EximeeBPMS
+      url: https://github.com/EximeeBPMS/eximeebpms

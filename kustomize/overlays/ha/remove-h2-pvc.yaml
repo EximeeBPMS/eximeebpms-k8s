@@ -1,0 +1,7 @@
+# The base H2 PersistentVolumeClaim is unused once db-patch.yaml switches to
+# an external PostgreSQL database -- remove it entirely.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eximeebpms-database-h2
+$patch: delete

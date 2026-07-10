@@ -1,0 +1,15 @@
+# Metadata required by Artifact Hub (https://artifacthub.io) to verify
+# ownership of this repository and unlock features like the "verified
+# publisher" badge and the automatic image security report.
+# See: https://artifacthub.io/docs/topics/repositories/#ownership-claim
+#
+# NOTE: for a classic (non-OCI) Helm repository, Artifact Hub reads this file
+# from the same path as the published `index.yaml` -- i.e. from the
+# `gh-pages` branch, not `main`. The "release" job in
+# .github/workflows/lint-test-release.yml copies it there automatically
+# after every chart-releaser run, so this file only needs to be maintained
+# here on `main`.
+#
+owners:
+  - name: "<TODO>"
+    email: "<TODO>"

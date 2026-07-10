@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eximeebpms
+  labels:
+    app.kubernetes.io/name: eximeebpms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: eximeebpms
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: eximeebpms
+    spec:
+      serviceAccountName: eximeebpms
+      securityContext:
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: eximeebpms
+          image: ghcr.io/eximeebpms/eximeebpms-bpm-platform:run-1.2.0
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            # H2 is bundled for a quick start only -- it does not support
+            # clustering. Point DB_URL/DB_DRIVER at an external, highly
+            # available database for any multi-replica deployment
+            # (see overlays/ha).
+            - name: DB_DRIVER
+              value: org.h2.Driver
+            - name: DB_URL
+              value: jdbc:h2:./eximeebpms-h2-dbs/process-engine
+            - name: DB_USERNAME
+              value: sa
+            - name: DB_PASSWORD
+              value: sa
+          readinessProbe:
+            httpGet:
+              path: /eximeebpms/
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+              ephemeral-storage: 128Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+              ephemeral-storage: 512Mi
+          volumeMounts:
+            - name: database-h2
+              mountPath: /eximeebpms/eximeebpms-h2-dbs
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: database-h2
+          persistentVolumeClaim:
+            claimName: eximeebpms-database-h2
+        - name: tmp
+          emptyDir: {}

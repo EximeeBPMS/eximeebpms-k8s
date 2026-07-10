@@ -1,0 +1,91 @@
+name: Kustomize validate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "kustomize/**"
+      - ".github/workflows/kustomize-validate.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "kustomize/**"
+      - ".github/workflows/kustomize-validate.yml"
+
+env:
+  KUBE_SCORE_VERSION: 1.20.0
+
+jobs:
+  security-lint:
+    name: Security lint (kube-score)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        overlay:
+          - kustomize/base
+          - kustomize/overlays/ha
+          - kustomize/overlays/openshift
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install kube-score
+        run: |
+          curl -sL "https://github.com/zegl/kube-score/releases/download/v${KUBE_SCORE_VERSION}/kube-score_${KUBE_SCORE_VERSION}_linux_amd64.tar.gz" \
+            | tar -xz kube-score
+          sudo mv kube-score /usr/local/bin/kube-score
+
+      - name: Build manifests
+        run: kubectl kustomize ${{ matrix.overlay }} > rendered.yaml
+
+      - name: kube-score (overlays/ha -- gated)
+        if: matrix.overlay == 'kustomize/overlays/ha'
+        # container-security-context-user-group-id: kube-score wants a uid/gid
+        # above 10000; the published image bakes in the fixed non-root
+        # "eximeebpms" user at uid/gid 1000, so changing this would require a
+        # breaking image rebuild.
+        run: kube-score score rendered.yaml --ignore-test container-security-context-user-group-id
+
+      - name: kube-score (base/openshift -- report only)
+        if: matrix.overlay != 'kustomize/overlays/ha'
+        # These are single-replica demo profiles that intentionally trade off a
+        # few checks (no NetworkPolicy, single replica) for a "works on any
+        # cluster out of the box" quick start -- see the "Security defaults"
+        # section of the README. Informational only.
+        continue-on-error: true
+        run: kube-score score rendered.yaml
+
+  build-and-validate:
+    name: Build and validate manifests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        overlay:
+          - kustomize/base
+          - kustomize/overlays/ha
+          - kustomize/overlays/openshift
+        # see https://kubernetes.io/releases/patch-releases/#support-period
+        k8s-version:
+          - "1.32.2"
+          - "1.31.6"
+          - "1.30.10"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build manifests
+        run: kubectl kustomize ${{ matrix.overlay }} > rendered.yaml
+
+      - name: Validate with kubeconform
+        uses: docker://ghcr.io/yannh/kubeconform:latest
+        with:
+          entrypoint: /kubeconform
+          args: >-
+            -summary
+            -skip Route
+            -kubernetes-version ${{ matrix.k8s-version }}
+            -schema-location default
+            -schema-location 'https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/{{.NormalizedKubernetesVersion}}/{{.ResourceKind}}{{.KindSuffix}}.json'
+            rendered.yaml

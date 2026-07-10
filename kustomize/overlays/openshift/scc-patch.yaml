@@ -1,0 +1,28 @@
+# OpenShift assigns a per-namespace UID range via its Security Context
+# Constraints (SCC) and will reject a Pod that hardcodes runAsUser/fsGroup
+# outside that range. Drop the fixed values here and let the SCC assign one --
+# the eximeebpms container already runs fine as an arbitrary non-root UID
+# (it does not require a specific uid, only group 0 / GID-writable dirs,
+# which the published image already sets up).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eximeebpms
+spec:
+  template:
+    spec:
+      securityContext:
+        fsGroup: null
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: eximeebpms
+          securityContext:
+            runAsUser: null
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault

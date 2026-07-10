@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eximeebpms
+spec:
+  # Remove the static `replicas` set in base -- the HPA in hpa.yaml
+  # (minReplicas: 3) owns the replica count. Keeping both would fight the HPA
+  # on every `kubectl apply`.
+  replicas: null
+  template:
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: eximeebpms
+      containers:
+        - name: eximeebpms
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "1"
+              memory: 1Gi
+              ephemeral-storage: 256Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+              ephemeral-storage: 1Gi

@@ -1,0 +1,19 @@
+# Restricts pod ingress/egress -- tighten the default `from`/`to: []` (allow
+# from anywhere in the namespace / allow all egress) rules for your environment,
+# e.g. restrict `from` to your ingress controller's namespace and `to` to your
+# database and identity provider.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eximeebpms
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: eximeebpms
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from: []
+  egress:
+    - to: []

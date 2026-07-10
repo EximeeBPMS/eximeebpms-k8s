@@ -1,0 +1,23 @@
+{{- if eq (include "eximeebpms.h2DatabaseIsUsed" .) "true" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "eximeebpms.fullname" . }}-database-h2
+  labels:
+    {{- include "eximeebpms.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.persistence.storageClass }}
+  {{- if (eq "-" .Values.persistence.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.persistence.storageClass | quote }}
+  {{- end }}
+  {{- end }}
+  resources:
+    requests:
+      {{- if .Values.persistence.size }}
+      storage: {{ .Values.persistence.size }}
+      {{- end }}
+{{- end }}
