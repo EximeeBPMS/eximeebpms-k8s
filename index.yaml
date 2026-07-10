@@ -13,6 +13,42 @@ entries:
           url: https://github.com/EximeeBPMS/eximeebpms
     apiVersion: v2
     appVersion: 1.2.0
+    created: "2026-07-10T13:47:47.558636333Z"
+    description: 'Helm chart for EximeeBPMS, a mission-critical BPMN 2.0 process engine
+      forked from Camunda 7. '
+    digest: 7119568cadf468c7ca8e36636da54ff83767e0673fcc946e75e86a7d3f33dc41
+    home: https://eximeebpms.org
+    keywords:
+    - bpmn
+    - eximeebpms
+    - camunda
+    - dmn
+    - process-engine
+    - workflow
+    maintainers:
+    - name: Consdata
+      url: https://github.com/EximeeBPMS
+    name: eximeebpms
+    sources:
+    - https://github.com/EximeeBPMS/eximeebpms-k8s/tree/main/charts/eximeebpms
+    - https://github.com/EximeeBPMS/eximeebpms-docker
+    - https://github.com/EximeeBPMS/eximeebpms
+    type: application
+    urls:
+    - https://github.com/EximeeBPMS/eximeebpms-k8s/releases/download/eximeebpms-0.2.4/eximeebpms-0.2.4.tgz
+    version: 0.2.4
+  - annotations:
+      artifacthub.io/containsSecurityUpdates: "true"
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: EximeeBPMS Helm chart
+          url: https://github.com/EximeeBPMS/eximeebpms-k8s/tree/main/charts/eximeebpms
+        - name: EximeeBPMS Docker
+          url: https://github.com/EximeeBPMS/eximeebpms-docker
+        - name: EximeeBPMS
+          url: https://github.com/EximeeBPMS/eximeebpms
+    apiVersion: v2
+    appVersion: 1.2.0
     created: "2026-07-10T13:06:05.579380629Z"
     description: 'Helm chart for EximeeBPMS, a mission-critical BPMN 2.0 process engine
       forked from Camunda 7. '
@@ -119,4 +155,4 @@ entries:
     urls:
     - https://github.com/EximeeBPMS/eximeebpms-k8s/releases/download/eximeebpms-0.2.1/eximeebpms-0.2.1.tgz
     version: 0.2.1
-generated: "2026-07-10T13:06:05.579398275Z"
+generated: "2026-07-10T13:47:47.558649442Z"
