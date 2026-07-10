@@ -199,8 +199,11 @@ jobs:
             rm -rf /tmp/gh-pages-sync
             git worktree add /tmp/gh-pages-sync gh-pages
             cp artifacthub-repo.yml /tmp/gh-pages-sync/artifacthub-repo.yml
-            if ! git -C /tmp/gh-pages-sync diff --quiet -- artifacthub-repo.yml; then
-              git -C /tmp/gh-pages-sync add artifacthub-repo.yml
+            git -C /tmp/gh-pages-sync add artifacthub-repo.yml
+            # `git diff` ignores untracked files, so it never detects
+            # artifacthub-repo.yml the first time it's copied here -- diff the
+            # staged index against HEAD instead, which covers new and changed.
+            if ! git -C /tmp/gh-pages-sync diff --cached --quiet; then
               git -C /tmp/gh-pages-sync commit -m "Sync artifacthub-repo.yml from main"
               git -C /tmp/gh-pages-sync push origin gh-pages
             fi
