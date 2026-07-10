@@ -57,7 +57,7 @@ for their expected types.
 | Key | Description | Default |
 |-----|-------------|---------|
 | `image.repository` | Container image repository | `ghcr.io/eximeebpms/eximeebpms-bpm-platform` |
-| `image.tag` | Container image tag (`<distro>-<version>`) | `run-1.3.0` |
+| `image.tag` | Container image tag (`<distro>-<version>`); empty defaults to `run-{appVersion}` | `""` |
 | `general.replicaCount` | Number of replicas | `1` |
 | `database.url` | JDBC URL | `jdbc:h2:./eximeebpms-h2-dbs/process-engine` |
 | `ingress.enabled` | Enable an Ingress resource | `false` |

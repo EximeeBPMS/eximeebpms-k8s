@@ -188,8 +188,54 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Import GPG signing key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          # GnuPG 2.1+ always routes secret-key operations through gpg-agent,
+          # which otherwise tries to launch a pinentry prompt -- impossible on
+          # a headless runner ("Inappropriate ioctl for device"). Configure
+          # the agent for non-interactive loopback pinentry before doing
+          # anything else with the secret key.
+          mkdir -p ~/.gnupg
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          gpgconf --kill gpg-agent
+          # The secret holds the key base64-encoded (multi-line ASCII-armor
+          # blocks don't survive being pasted into GitHub secrets reliably) --
+          # decode before importing.
+          echo "$GPG_PRIVATE_KEY" | base64 --decode | gpg --batch --yes --pinentry-mode loopback --import
+          # helm's provenance signing reads a legacy-format keyring, not the
+          # GnuPG 2.1+ keybox (.kbx) format -- export to the format it expects.
+          # The export still touches the agent, which wants the passphrase.
+          echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 \
+            --export-secret-keys > /tmp/secring.gpg
+
+      - name: Package and sign chart
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          mkdir -p .cr-release-packages
+          key_uid=$(gpg --list-secret-keys --with-colons | awk -F: '/^uid:/ {print $10; exit}')
+          echo "$GPG_PASSPHRASE" | helm package charts/eximeebpms -d .cr-release-packages \
+            --sign --key "$key_uid" --keyring /tmp/secring.gpg --passphrase-file -
+          # Print the fingerprint once so it can be copied into the
+          # artifacthub.io/signKey annotation in Chart.yaml (a one-time,
+          # manual step -- Chart.yaml isn't templated, so this can't be
+          # kept in sync automatically).
+          echo "Signing key fingerprint (for artifacthub.io/signKey):"
+          gpg --list-secret-keys --with-colons --fingerprint | awk -F: '/^fpr:/ {print $10; exit}'
+
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.7.0
+        # Pinned to v1.5.0: v1.6+ has a known regression where cr.sh crashes
+        # with "latest_tag: unbound variable" whenever skip_packaging is set
+        # (https://github.com/helm/chart-releaser-action/issues/171) -- the
+        # release itself completes fine before the crash, but it still fails
+        # the job. v1.5.0 predates the buggy code path entirely.
+        uses: helm/chart-releaser-action@v1.5.0
+        with:
+          skip_packaging: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
