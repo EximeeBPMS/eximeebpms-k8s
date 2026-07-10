@@ -226,6 +226,11 @@ jobs:
           # kept in sync automatically).
           echo "Signing key fingerprint (for artifacthub.io/signKey):"
           gpg --list-secret-keys --with-colons --fingerprint | awk -F: '/^fpr:/ {print $10; exit}'
+          # One-time bootstrap: print the public key so it can be committed to
+          # this repo (e.g. as SIGNING_KEY.asc) for artifacthub.io/signKey's
+          # url field to point at. Not sensitive -- public keys are public.
+          echo "Public key (copy into SIGNING_KEY.asc, then this step can be removed):"
+          gpg --armor --export "$key_uid"
 
       - name: Run chart-releaser
         # Pinned to v1.5.0: v1.6+ has a known regression where cr.sh crashes
