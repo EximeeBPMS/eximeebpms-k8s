@@ -23,8 +23,11 @@ image:
   repository: ghcr.io/eximeebpms/eximeebpms-bpm-platform
   # Published tags follow the "<distro>-<version>" scheme, e.g. "run-1.2.0".
   # "run" is the Spring Boot / embedded Tomcat distribution and is the recommended
-  # default for Kubernetes deployments.
-  tag: "run-1.2.0"
+  # default for Kubernetes deployments. Left empty here so it defaults to
+  # "run-{appVersion}" (see templates/deployment.yaml) -- bumping appVersion in
+  # Chart.yaml is enough to move this profile; set an explicit tag only to
+  # pick a different distro or override the version.
+  tag: ""
   pullPolicy: IfNotPresent
   pullSecrets: []
   command: []
