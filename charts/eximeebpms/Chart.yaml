@@ -3,7 +3,7 @@ name: eximeebpms
 description: |
   Helm chart for EximeeBPMS, a mission-critical BPMN 2.0 process engine forked from Camunda 7.
 type: application
-version: 0.2.6
+version: 0.2.7
 appVersion: 1.2.0
 keywords:
   - bpmn
@@ -23,6 +23,9 @@ maintainers:
 annotations:
   artifacthub.io/license: Apache-2.0
   artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/signKey: |
+    fingerprint: 3B2889D0E4AC493E61CD4E34D85BD219A290F4BE
+    url: https://raw.githubusercontent.com/EximeeBPMS/eximeebpms-k8s/main/SIGNING_KEY.asc
   # artifacthub.io/images intentionally omitted -- Artifact Hub auto-detects
   # container images from a dry-run template render with default values, so
   # bumping appVersion (the single source of truth for the default image tag,
