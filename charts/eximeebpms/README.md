@@ -69,6 +69,8 @@ for their expected types.
 
 ## See also
 
-- [Kustomize manifests](../../kustomize) -- a templating-free alternative, including an OpenShift-friendly overlay
+- [Kustomize manifests](https://github.com/EximeeBPMS/eximeebpms-k8s/tree/main/kustomize) -- a templating-free alternative, including an OpenShift-friendly overlay
 - [eximeebpms-docker](https://github.com/EximeeBPMS/eximeebpms-docker) -- the container image this chart deploys
 - [eximeebpms](https://github.com/EximeeBPMS/eximeebpms) -- the EximeeBPMS process engine
+- [EximeeBPMS documentation](https://docs.eximeebpms.org/) -- getting started guides and reference docs for the process engine this chart deploys
+- [eximeebpms.org](https://eximeebpms.org/) -- the EximeeBPMS product site

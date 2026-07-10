@@ -3,7 +3,7 @@ name: eximeebpms
 description: |
   Helm chart for EximeeBPMS, a mission-critical BPMN 2.0 process engine forked from Camunda 7.
 type: application
-version: 0.2.1
+version: 0.2.2
 appVersion: 1.2.0
 keywords:
   - bpmn

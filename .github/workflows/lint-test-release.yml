@@ -21,6 +21,31 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check chart version bump
+        # chart-releaser packages/releases based on a plain `git diff` against
+        # the last release tag for *any* file under charts/eximeebpms -- if
+        # that diff is non-empty but Chart.yaml's version wasn't bumped, it
+        # tries to re-create the same release tag and fails with a confusing
+        # "422 already_exists" at the very end of the pipeline. Catch it here
+        # instead, with a clear error, before anything else runs.
+        run: |
+          latest_tag=$(git tag --list 'eximeebpms-*' --sort=-v:refname | head -n1)
+          if [[ -z "$latest_tag" ]]; then
+            echo "No previous release tag found -- skipping version-bump check."
+            exit 0
+          fi
+          if git diff --quiet "$latest_tag" HEAD -- charts/eximeebpms; then
+            echo "No changes to charts/eximeebpms since $latest_tag."
+            exit 0
+          fi
+          old_version=$(git show "$latest_tag:charts/eximeebpms/Chart.yaml" | grep '^version:' | awk '{print $2}')
+          new_version=$(grep '^version:' charts/eximeebpms/Chart.yaml | awk '{print $2}')
+          if [[ "$old_version" == "$new_version" ]]; then
+            echo "::error::charts/eximeebpms changed since $latest_tag but Chart.yaml version is still $new_version -- bump the chart version."
+            exit 1
+          fi
+          echo "Chart version bumped: $old_version -> $new_version. OK."
+
       - name: Set up Helm
         uses: azure/setup-helm@v5
         with:
