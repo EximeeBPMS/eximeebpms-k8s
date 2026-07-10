@@ -23,11 +23,10 @@ maintainers:
 annotations:
   artifacthub.io/license: Apache-2.0
   artifacthub.io/containsSecurityUpdates: "true"
-  artifacthub.io/images: |
-    - name: eximeebpms-bpm-platform
-      image: ghcr.io/eximeebpms/eximeebpms-bpm-platform:run-1.2.0
-      platforms:
-        - linux/amd64
+  # artifacthub.io/images intentionally omitted -- Artifact Hub auto-detects
+  # container images from a dry-run template render with default values, so
+  # bumping appVersion (the single source of truth for the default image tag,
+  # see values.yaml/deployment.yaml) is enough; no second place to update.
   artifacthub.io/links: |
     - name: EximeeBPMS Helm chart
       url: https://github.com/EximeeBPMS/eximeebpms-k8s/tree/main/charts/eximeebpms

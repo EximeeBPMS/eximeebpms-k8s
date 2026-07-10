@@ -11,7 +11,3 @@ patches:
   - path: replica-patch.yaml
   - path: db-patch.yaml
   - path: remove-h2-pvc.yaml
-
-images:
-  - name: ghcr.io/eximeebpms/eximeebpms-bpm-platform
-    newTag: run-1.2.0
