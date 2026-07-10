@@ -28,7 +28,7 @@ jobs:
           - kustomize/overlays/openshift
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install kube-score
         run: |
@@ -47,14 +47,18 @@ jobs:
         # breaking image rebuild.
         run: kube-score score rendered.yaml --ignore-test container-security-context-user-group-id
 
-      - name: kube-score (base/openshift -- report only)
+      - name: kube-score (base/openshift)
         if: matrix.overlay != 'kustomize/overlays/ha'
         # These are single-replica demo profiles that intentionally trade off a
-        # few checks (no NetworkPolicy, single replica) for a "works on any
-        # cluster out of the box" quick start -- see the "Security defaults"
-        # section of the README. Informational only.
-        continue-on-error: true
-        run: kube-score score rendered.yaml
+        # few checks for a "works on any cluster out of the box" quick start --
+        # see the "Security defaults" section of the README. Everything else is
+        # a real gate -- any other finding fails the build.
+        run: |
+          kube-score score rendered.yaml \
+            --ignore-test pod-networkpolicy \
+            --ignore-test container-image-pull-policy \
+            --ignore-test deployment-replicas \
+            --ignore-test container-security-context-user-group-id
 
   build-and-validate:
     name: Build and validate manifests
@@ -73,7 +77,7 @@ jobs:
           - "1.30.10"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Build manifests
         run: kubectl kustomize ${{ matrix.overlay }} > rendered.yaml
