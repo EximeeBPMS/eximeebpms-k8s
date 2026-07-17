@@ -15,6 +15,45 @@ entries:
         fingerprint: 3B2889D0E4AC493E61CD4E34D85BD219A290F4BE
         url: https://raw.githubusercontent.com/EximeeBPMS/eximeebpms-k8s/main/SIGNING_KEY.asc
     apiVersion: v2
+    appVersion: 1.3.0
+    created: "2026-07-17T23:54:49.423959972Z"
+    description: 'Helm chart for EximeeBPMS, a mission-critical BPMN 2.0 process engine
+      forked from Camunda 7. '
+    digest: 825b24fdfa06ab076cc6152a14f3efece671d3661e0840c4a9ff98d76bb8f658
+    home: https://eximeebpms.org
+    keywords:
+    - bpmn
+    - eximeebpms
+    - camunda
+    - dmn
+    - process-engine
+    - workflow
+    maintainers:
+    - name: Consdata
+      url: https://github.com/EximeeBPMS
+    name: eximeebpms
+    sources:
+    - https://github.com/EximeeBPMS/eximeebpms-k8s/tree/main/charts/eximeebpms
+    - https://github.com/EximeeBPMS/eximeebpms-docker
+    - https://github.com/EximeeBPMS/eximeebpms
+    type: application
+    urls:
+    - https://github.com/EximeeBPMS/eximeebpms-k8s/releases/download/eximeebpms-0.3.0/eximeebpms-0.3.0.tgz
+    version: 0.3.0
+  - annotations:
+      artifacthub.io/containsSecurityUpdates: "true"
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: EximeeBPMS Helm chart
+          url: https://github.com/EximeeBPMS/eximeebpms-k8s/tree/main/charts/eximeebpms
+        - name: EximeeBPMS Docker
+          url: https://github.com/EximeeBPMS/eximeebpms-docker
+        - name: EximeeBPMS
+          url: https://github.com/EximeeBPMS/eximeebpms
+      artifacthub.io/signKey: |
+        fingerprint: 3B2889D0E4AC493E61CD4E34D85BD219A290F4BE
+        url: https://raw.githubusercontent.com/EximeeBPMS/eximeebpms-k8s/main/SIGNING_KEY.asc
+    apiVersion: v2
     appVersion: 1.2.0
     created: "2026-07-10T14:19:01.473019338Z"
     description: 'Helm chart for EximeeBPMS, a mission-critical BPMN 2.0 process engine
@@ -266,4 +305,4 @@ entries:
     urls:
     - https://github.com/EximeeBPMS/eximeebpms-k8s/releases/download/eximeebpms-0.2.1/eximeebpms-0.2.1.tgz
     version: 0.2.1
-generated: "2026-07-10T14:19:01.473053672Z"
+generated: "2026-07-17T23:54:49.423998053Z"
