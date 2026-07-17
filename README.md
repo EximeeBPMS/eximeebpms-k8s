@@ -99,7 +99,7 @@ pass in CI (see below). Namespaces enforcing the `restricted`
 - **Signed images**: published images are signed keylessly with [cosign](https://github.com/sigstore/cosign)
   using GitHub Actions OIDC (Sigstore/Fulcio/Rekor) -- no long-lived signing key to manage or leak:
   ```shell
-  cosign verify ghcr.io/eximeebpms/eximeebpms-bpm-platform:run-1.2.0 \
+  cosign verify ghcr.io/eximeebpms/eximeebpms-bpm-platform:run-1.3.0 \
     --certificate-identity-regexp 'https://github.com/EximeeBPMS/eximeebpms-docker/.*' \
     --certificate-oidc-issuer https://token.actions.githubusercontent.com
   ```
