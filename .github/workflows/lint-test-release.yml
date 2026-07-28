@@ -14,7 +14,7 @@ env:
 jobs:
   lint-chart:
     name: Lint chart
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       version_bumped: ${{ steps.version-check.outputs.version_bumped }}
     steps:
@@ -84,7 +84,7 @@ jobs:
 
   security-lint:
     name: Security lint (kube-score)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs:
       - lint-chart
     steps:
