@@ -12,6 +12,13 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 2
+    ignore:
+      # Pinned deliberately in lint-test-release.yml -- v1.6+ crashes with
+      # "latest_tag: unbound variable" under skip_packaging, which fails the
+      # release job after chart-releaser's own work is done and skips the OCI
+      # publish. A bump to v1.7.0 slipped through in #3 and broke the 0.4.0
+      # chart release. Unignore only once upstream issue 171 is fixed.
+      - dependency-name: "helm/chart-releaser-action"
     groups:
       github-actions:
         patterns:
