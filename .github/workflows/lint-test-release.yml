@@ -279,6 +279,20 @@ jobs:
           digest=$(echo "$push_output" | grep -oP 'Digest: \K.*')
           cosign sign --yes "ghcr.io/eximeebpms/charts/eximeebpms@${digest}"
 
+      - name: Verify OCI artifact was published
+        # chart-releaser's classic gh-pages publish
+        # succeeding is not proof the OCI publish above also succeeded -- a
+        # crash anywhere downstream of chart-releaser (as happened for chart
+        # 0.4.0) leaves a fully published classic repo and a green-looking
+        # job with no OCI artifact. Assert the artifact actually resolves
+        # before calling the release done, so this fails loudly instead of
+        # silently.
+        run: |
+          set -euo pipefail
+          version=$(grep '^version:' charts/eximeebpms/Chart.yaml | awk '{print $2}')
+          helm show chart "oci://ghcr.io/eximeebpms/charts/eximeebpms" --version "$version" >/dev/null
+          echo "OK: oci://ghcr.io/eximeebpms/charts/eximeebpms (version $version) resolves."
+
       - name: Sync artifacthub-repo.yml to gh-pages
         # Artifact Hub reads this file from the same path as index.yaml (i.e.
         # from gh-pages, not main) for classic Helm repositories.
