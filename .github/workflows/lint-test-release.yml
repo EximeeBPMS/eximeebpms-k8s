@@ -261,7 +261,15 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@v3
+        # Pinned to an exact version rather than the floating `@v3` major tag
+        # -- this step sits in the OCI signing half of the release job, the
+        # same half that silently lost its output when chart-releaser broke
+        # at the 0.4.0 release. A floating tag lets a behaviour change land
+        # unannounced, and it would land on a release day, since this job
+        # only runs once per chart version. Not in dependabot.yml's ignore
+        # list (unlike helm/chart-releaser-action) -- future bumps should
+        # show up as ordinary, reviewable Dependabot PRs.
+        uses: sigstore/cosign-installer@v3.10.1
 
       - name: Publish chart as a signed OCI artifact
         # Alongside the classic gh-pages chart repo above, also publish (and
