@@ -269,7 +269,7 @@ jobs:
         # only runs once per chart version. Not in dependabot.yml's ignore
         # list (unlike helm/chart-releaser-action) -- future bumps should
         # show up as ordinary, reviewable Dependabot PRs.
-        uses: sigstore/cosign-installer@v3.10.1
+        uses: sigstore/cosign-installer@v4.1.2
 
       - name: Publish chart as a signed OCI artifact
         # Alongside the classic gh-pages chart repo above, also publish (and
