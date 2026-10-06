@@ -12,12 +12,17 @@ on:
       - "kustomize/**"
       - ".github/workflows/kustomize-validate.yml"
 
+# Default-deny: every job below declares exactly what it needs.
+permissions: {}
+
 env:
   KUBE_SCORE_VERSION: 1.20.0
 
 jobs:
   security-lint:
     name: Security lint (kube-score)
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -62,6 +67,8 @@ jobs:
 
   build-and-validate:
     name: Build and validate manifests
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -72,9 +79,9 @@ jobs:
           - kustomize/overlays/openshift
         # see https://kubernetes.io/releases/patch-releases/#support-period
         k8s-version:
-          - "1.32.2"
-          - "1.31.6"
-          - "1.30.10"
+          - "1.37.0"
+          - "1.36.4"
+          - "1.35.8"
     steps:
       - name: Checkout
         uses: actions/checkout@v7
