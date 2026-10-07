@@ -32,6 +32,10 @@ spec:
       ]
       securityContext:
         runAsNonRoot: true
+        # The curl image names its user (curl_user) instead of giving a UID,
+        # so the kubelet cannot check runAsNonRoot without an explicit one.
+        runAsUser: 100
+        runAsGroup: 101
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         capabilities:
