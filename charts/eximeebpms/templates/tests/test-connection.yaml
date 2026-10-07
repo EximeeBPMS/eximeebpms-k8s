@@ -18,7 +18,7 @@ spec:
       type: RuntimeDefault
   containers:
     - name: curl
-      image: curlimages/curl:8.11.1
+      image: curlimages/curl:8.22.0
       imagePullPolicy: Always
       command: ['curl']
       # The EximeeBPMS service could take some time to start, so setting a retry mechanism.
@@ -32,6 +32,10 @@ spec:
       ]
       securityContext:
         runAsNonRoot: true
+        # The curl image names its user (curl_user) instead of giving a UID,
+        # so the kubelet cannot check runAsNonRoot without an explicit one.
+        runAsUser: 100
+        runAsGroup: 101
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         capabilities:
