@@ -21,7 +21,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: eximeebpms
-          image: ghcr.io/eximeebpms/eximeebpms-bpm-platform:run-1.4.0
+          image: ghcr.io/eximeebpms/eximeebpms-bpm-platform:run-1.4.1
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
