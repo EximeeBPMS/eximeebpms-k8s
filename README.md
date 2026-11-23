@@ -93,14 +93,11 @@ pass in CI (see below). Namespaces enforcing the `restricted`
 - **CI security lint**: rendered manifests (the Helm chart output and every Kustomize overlay) are scanned
   with [kube-score](https://github.com/zegl/kube-score) on every push/PR, catching regressions in the security
   posture above before they reach `main`.
-- **Image scanning + SBOM**: every published image is scanned with [Trivy](https://github.com/aquasecurity/trivy)
-  (the build fails on CRITICAL findings) and shipped with a CycloneDX SBOM -- see the
-  [eximeebpms-docker](https://github.com/EximeeBPMS/eximeebpms-docker) pipeline.
 - **Signed images**: published images are signed keylessly with [cosign](https://github.com/sigstore/cosign)
   using GitHub Actions OIDC (Sigstore/Fulcio/Rekor) -- no long-lived signing key to manage or leak:
   ```shell
   cosign verify ghcr.io/eximeebpms/eximeebpms-bpm-platform:run-1.4.1 \
-    --certificate-identity-regexp 'https://github.com/EximeeBPMS/eximeebpms-docker/.*' \
+    --certificate-identity-regexp 'https://github.com/EximeeBPMS/eximeebpms-docker/\.github/workflows/(build-test-and-publish-ce|sign-ce)\.yml@refs/heads/main' \
     --certificate-oidc-issuer https://token.actions.githubusercontent.com
   ```
 - **Signed Helm chart**: on top of the classic `gh-pages` chart repo, the chart is published as an OCI artifact
